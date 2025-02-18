@@ -10,6 +10,7 @@ typedef struct {
 
 Fracao criarFracao( int Num, int Dem );
 Fracao simplificarFracao( Fracao F );
+Fracao somarFracao();
 
 int mian() {
 
@@ -50,3 +51,5 @@ Fracao simplificarFracao( Fracao F ) {
     F.Denominador = F.Denominador /MDC;
     return F;
 }
+
+Fracao somarFracao();
