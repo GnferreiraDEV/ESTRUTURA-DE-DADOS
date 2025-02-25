@@ -1,0 +1,2 @@
+Número: 125
+Palavra: Esta é uma frase que será gravada no arquivo!
