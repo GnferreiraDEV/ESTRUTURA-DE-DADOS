@@ -10,20 +10,21 @@ typedef struct {
 int main() {
     FILE * fp;
 
-    fp = fopen("arquivo.txt", "r");
+    fp = fopen("classificacao.txt", "r");
 
     if (fp == NULL) {
         printf("ERRO: o arquivo não pode ser aberto!\n");
         exit(1);
     }
 
-    Equipe A; 
+    Equipe Times[4];
+    int i = 0;
 
-    
-    fscanf(fp, "%d %s %d", &A.Posicao, A.Nome, &A.Pontos);
+    while(  fscanf(fp, "%d %s %d", &Times[i].Posicao, Times[i].Nome, &Times[i].Pontos) == 0 ) {
+        printf("O %s está na %d° posição e tem %d pontos!\n", Times[i].Nome, Times[i].Posicao, Times[i].Pontos);
+        i++;
+    }
 
-    
-    printf("O %s está na %d° posição e tem %d pontos!\n", A.Nome, A.Posicao, A.Pontos);
 
     fclose(fp);
 
