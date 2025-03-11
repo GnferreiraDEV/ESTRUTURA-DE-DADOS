@@ -21,13 +21,13 @@ int numeros[] = {14, 29, 37, 11, 43, 25, 19, 32, 16, 22,
 
 int tamanho = sizeof(numeros) / sizeof(numeros[0]);
 
-int elemento = 35;
+int elemento = 16;
 
 int posicao = encontrar_posicao(numeros, tamanho, elemento);
 
-if (posicao != -1) printf("Elemento %d encontrado na posição: %d\n", elemento, posicao);
+if (posicao != -1) printf("Elemento %d encontrado na posicao: %d\n", elemento, posicao);
 
-else printf("Elemento %d não encontrado no vetor.\n", elemento);
+else printf("Elemento %d nao encontrado no vetor.\n", elemento);
 
 return 0;
 
