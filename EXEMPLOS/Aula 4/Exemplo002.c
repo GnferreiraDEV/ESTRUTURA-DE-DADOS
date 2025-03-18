@@ -4,7 +4,7 @@
 
 int main(){
 
-    int N = 100000;
+    int N = 200000;
     int i;
     int *V = (int *)malloc(N * sizeof(int));
     clock_t t0, tf;
