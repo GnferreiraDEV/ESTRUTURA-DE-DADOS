@@ -18,10 +18,10 @@ Lista * criarLista(int N);
 int main(){
     Lista *X = criarLista(15);
 
-    if (X != NULL){
+    if (X != NULL){ // Mostra o endereço de memória da lista;
 
         printf("A lista foi criada!\n");
-        printf("%d\n", X);
+        printf("%x\n", X);
     }
 
     return 0;
