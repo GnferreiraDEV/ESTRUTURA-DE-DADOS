@@ -14,6 +14,8 @@ typedef struct{
 //Protótipos
 
 Lista * criarLista(int N);
+void destruirLista(Lista * L);
+void inserirElemento(Lista *L, Item I, int Posicao);
 
 int main(){
     Lista *X = criarLista(15);
@@ -23,6 +25,8 @@ int main(){
         printf("A lista foi criada!\n");
         printf("%x\n", X);
     }
+
+    destruirLista(X);
 
     return 0;
 }
@@ -57,6 +61,29 @@ int main(){
         
 
 
+    }
+
+    void destruirLista(Lista * L){
+        free(L->Array);
+        free(L);
+    }
+
+    void inserirElemento(Lista *L, Item I, int Posicao){
+        if(L->tamanho == L->capacidade){
+            printf("ERRO: Lista estah cheia e nao pode receber mais elementos!\n");
+            return;
+        }
+
+        if(Posicao < 0 || Posicao >= L->tamanho){
+            printf("Erro a posicao eh invalida!\n");
+            return;
+        }
+
+        int i;
+        for(i = L->tamanho - 1; i >=Posicao; i--) L->Array[i + 1] = L->Array[i];
+        L->Array[Posicao] = I;
+
+        L->tamanho++;
     }
 
 
