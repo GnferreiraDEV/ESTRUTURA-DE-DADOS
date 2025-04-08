@@ -18,6 +18,12 @@ Lista * criarLista(int N);
 int main(){
     Lista *X = criarLista(15);
 
+    if (X != NULL){
+
+        printf("A lista foi criada!\n");
+        printf("%d\n", X);
+    }
+
     return 0;
 }
 
