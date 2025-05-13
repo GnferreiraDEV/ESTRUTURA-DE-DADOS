@@ -1,0 +1,190 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Estrutura que representa uma música na playlist
+typedef struct Musica {
+    int id;
+    char titulo[100];
+    char autor[100];
+    int prioridade; // 1 = alta, 2 = média, 3 = baixa
+    struct Musica *anterior;
+    struct Musica *proximo;
+} Musica;
+
+// Ponteiro para o início da playlist
+Musica *inicio = NULL;
+
+// Cria uma nova música com os dados fornecidos
+Musica* criarMusica(int id, char titulo[], char autor[], int prioridade) {
+    Musica *nova = (Musica *)malloc(sizeof(Musica));
+    nova->id = id;
+    strcpy(nova->titulo, titulo);
+    strcpy(nova->autor, autor);
+    nova->prioridade = prioridade;
+    nova->anterior = NULL;
+    nova->proximo = NULL;
+    return nova;
+}
+
+// Insere uma nova música no final da playlist
+void inserirMusica(int id, char titulo[], char autor[], int prioridade) {
+    Musica *nova = criarMusica(id, titulo, autor, prioridade);
+
+    if (inicio == NULL) {
+        inicio = nova;
+    } else {
+        Musica *atual = inicio;
+        while (atual->proximo != NULL) {
+            atual = atual->proximo;
+        }
+        atual->proximo = nova;
+        nova->anterior = atual;
+    }
+}
+
+// Remove uma música da playlist pelo ID
+void removerMusica(int id) {
+    Musica *atual = inicio;
+
+    while (atual != NULL && atual->id != id) {
+        atual = atual->proximo;
+    }
+
+    if (atual == NULL) return;
+
+    if (atual->anterior != NULL)
+        atual->anterior->proximo = atual->proximo;
+    else
+        inicio = atual->proximo;
+
+    if (atual->proximo != NULL)
+        atual->proximo->anterior = atual->anterior;
+
+    free(atual);
+}
+
+// Move todas as músicas com determinada prioridade para o início da playlist
+void moverPrioridadeParaInicio(int prioridade) {
+    Musica *atual = inicio;
+    Musica *novaLista = NULL;
+    Musica *fimNovaLista = NULL;
+
+    while (atual != NULL) {
+        Musica *proxima = atual->proximo;
+
+        if (atual->prioridade == prioridade) {
+            // Desconecta da lista original
+            if (atual->anterior != NULL)
+                atual->anterior->proximo = atual->proximo;
+            if (atual->proximo != NULL)
+                atual->proximo->anterior = atual->anterior;
+            if (atual == inicio)
+                inicio = proxima;
+
+            // Conecta na nova lista
+            atual->anterior = atual->proximo = NULL;
+            if (novaLista == NULL) {
+                novaLista = fimNovaLista = atual;
+            } else {
+                fimNovaLista->proximo = atual;
+                atual->anterior = fimNovaLista;
+                fimNovaLista = atual;
+            }
+        }
+
+        atual = proxima;
+    }
+
+    // Junta nova lista no início da original
+    if (novaLista != NULL) {
+        fimNovaLista->proximo = inicio;
+        if (inicio != NULL)
+            inicio->anterior = fimNovaLista;
+        inicio = novaLista;
+    }
+}
+
+// Inverte a ordem das músicas entre dois IDs (inclusive)
+void inverterIntervalo(int id1, int id2) {
+    if (inicio == NULL || id1 == id2) return;
+
+    Musica *inicioInversao = NULL, *fimInversao = NULL, *atual = inicio;
+
+    // Localiza os nós com os IDs fornecidos
+    while (atual != NULL) {
+        if (atual->id == id1) inicioInversao = atual;
+        if (atual->id == id2) fimInversao = atual;
+        atual = atual->proximo;
+    }
+
+    if (inicioInversao == NULL || fimInversao == NULL) return;
+
+    // Garante que inicioInversao vem antes de fimInversao
+    if (inicioInversao->id > fimInversao->id) {
+        Musica *temp = inicioInversao;
+        inicioInversao = fimInversao;
+        fimInversao = temp;
+    }
+
+    Musica *anterior = inicioInversao->anterior;
+    Musica *proximo = fimInversao->proximo;
+    Musica *p = inicioInversao;
+    Musica *temp = NULL;
+
+    // Inverte os ponteiros dentro do intervalo
+    while (p != proximo) {
+        temp = p->proximo;
+        p->proximo = p->anterior;
+        p->anterior = temp;
+        p = temp;
+    }
+
+    // Reconecta a sublista invertida na lista principal
+    if (anterior != NULL)
+        anterior->proximo = fimInversao;
+    else
+        inicio = fimInversao;
+
+    if (proximo != NULL)
+        proximo->anterior = inicioInversao;
+
+    fimInversao->anterior = anterior;
+    inicioInversao->proximo = proximo;
+}
+
+// Exibe toda a playlist no terminal
+void exibirPlaylist() {
+    Musica *atual = inicio;
+
+    while (atual != NULL) {
+        printf("ID: %d | Título: %s | Autor: %s | Prioridade: %d\n",
+               atual->id, atual->titulo, atual->autor, atual->prioridade);
+        atual = atual->proximo;
+    }
+}
+
+// Programa principal com exemplo de uso
+int main() {
+    inserirMusica(1, "Imagine", "John Lennon", 2);
+    inserirMusica(2, "Bohemian Rhapsody", "Queen", 1);
+    inserirMusica(3, "Billie Jean", "Michael Jackson", 3);
+    inserirMusica(4, "Smells Like Teen Spirit", "Nirvana", 1);
+
+    printf("\nPlaylist original:\n");
+    exibirPlaylist();
+
+    moverPrioridadeParaInicio(1);
+    printf("\nApós mover músicas com prioridade 1 para o início:\n");
+    exibirPlaylist();
+
+    inverterIntervalo(2, 3);
+    printf("\nApós inverter músicas entre os IDs 2 e 3:\n");
+    exibirPlaylist();
+
+    removerMusica(1);
+    printf("\nApós remover a música com ID 1:\n");
+    exibirPlaylist();
+
+    return 0;
+}
